@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../Button';
 import Modal from '../Modal';
+import Game from '../Game';
 import './App.scss';
 
 const settingsMap = {
@@ -27,12 +28,18 @@ export default class App extends React.PureComponent {
       inGame: false,
       initialized: false,
     };
+
+    this.onGameFinish = this.onGameFinish.bind(this);
   }
 
   componentDidMount() {
     setTimeout(() => {
       this.setState({ initialized: true });
     });
+  }
+
+  onGameFinish() {
+    this.setState({ inGame: false });
   }
 
   startGame(settings) {
@@ -48,13 +55,28 @@ export default class App extends React.PureComponent {
     };
   }
 
+  renderGame() {
+    const { inGame, settings } = this.state;
+
+    if (!inGame) {
+      return null;
+    }
+
+    return (
+      <Game
+        settings={settings}
+        onFinish={this.onGameFinish}
+      />
+    );
+  }
+
   render() {
     const { initialized, inGame } = this.state;
 
     return (
       <div className="App">
         <Modal show={initialized && !inGame}>
-          <h1>Mine Sweeper V2</h1>
+          <h1>Minesweeper</h1>
           <p>
             <Button onClick={this.getLevelClickHandler('easy')}>
               Easy
@@ -67,6 +89,7 @@ export default class App extends React.PureComponent {
             </Button>
           </p>
         </Modal>
+        {this.renderGame()}
       </div>
     );
   }
