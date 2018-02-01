@@ -1,0 +1,45 @@
+.Modal {
+  position: absolute;
+  visibility: hidden;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+
+  .Modal__Background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 50px;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s ease 0.5s;
+  }
+
+  .Modal__Content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40%;
+    max-width: 500px;
+    opacity: 0;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.5s;
+  }
+
+  &.Modal--show {
+    visibility: visible;
+    left: 0;
+
+    .Modal__Background {
+      width: 100%;
+      height: 100%;
+    }
+
+    .Modal__Content {
+      opacity: 1;
+    }
+  }
+}
