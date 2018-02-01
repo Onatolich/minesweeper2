@@ -16,7 +16,7 @@ const settingsMap = {
   hard: {
     grid: [40, 20],
     mines: 100,
-  }
+  },
 };
 
 export default class App extends React.PureComponent {
