@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from '../Button';
 import Modal from '../Modal';
 import Cell from '../Cell';
-import fieldGenerator from './fieldGenerator';
+import minesGenerator from './minesGenerator';
 import './Game.scss';
 
 export default class Game extends React.PureComponent {
@@ -41,12 +41,30 @@ export default class Game extends React.PureComponent {
     }
   }
 
+  static generateField(settings) {
+    const field = [];
+    for (let i = 0; i < settings.grid[0]; i += 1) {
+      field[i] = [];
+      for (let j = 0; j < settings.grid[1]; j += 1) {
+        field[i][j] = {
+          isOpen: false,
+          isMarked: false,
+          isMine: false,
+          risk: 0,
+        };
+      }
+    }
+
+    return field;
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       state: Game.STATES.PROGRESS,
-      field: fieldGenerator(this.props.settings),
+      initialized: false,
+      field: Game.generateField(this.props.settings),
     };
 
     this.processField = this.processField.bind(this);
@@ -54,14 +72,20 @@ export default class Game extends React.PureComponent {
 
   getCellClickHandler(coordinates) {
     return () => {
-      if (this.state.state !== Game.STATES.PROGRESS) {
+      const { state, initialized } = this.state;
+      if (state !== Game.STATES.PROGRESS) {
         return;
       }
 
       const field = Game.cloneField(this.state.field);
+
+      if (!initialized) {
+        minesGenerator(field, this.props.settings, coordinates);
+      }
+
       Game.openCell(field, coordinates);
 
-      this.setState({ field });
+      this.setState({ field, initialized: true });
       setTimeout(this.processField);
     };
   }
