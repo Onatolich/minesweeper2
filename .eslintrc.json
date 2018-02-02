@@ -42,7 +42,8 @@
       "exports": "always-multiline",
       "functions": "ignore"
     }],
-    "arrow-parens": ["error", "always"]
+    "no-param-reassign": "off",
+    "no-continue": "off"
   },
   "plugins": [
     "react",

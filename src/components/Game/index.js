@@ -14,9 +14,7 @@ export default class Game extends React.PureComponent {
   static CELL_SIZE = 30;
 
   static cloneField(field) {
-    return field.map((row) => {
-      return row.map((cell) => ({...cell}));
-    });
+    return field.map(row => row.map(cell => ({ ...cell })));
   }
 
   static openCell(field, coordinates) {
@@ -104,14 +102,12 @@ export default class Game extends React.PureComponent {
     const { settings } = this.props;
     let opened = 0;
 
-    const alive = field.every((row) => {
-      return row.every((cell) => {
-        if (cell.isOpen) {
-          opened += 1;
-        }
-        return !cell.isOpen || !cell.isMine;
-      });
-    });
+    const alive = field.every(row => row.every((cell) => {
+      if (cell.isOpen) {
+        opened += 1;
+      }
+      return !cell.isOpen || !cell.isMine;
+    }));
 
     if (!alive) {
       this.finish(false);
