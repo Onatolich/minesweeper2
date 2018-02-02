@@ -1,7 +1,13 @@
-function isNeighbour(coordinate, base) {
-  return coordinate >= base - 1 && coordinate <= base + 1;
+/**
+ * Returns true if distance between 2 points is less than 1
+ */
+function isNeighbour(point1, point2) {
+  return Math.abs(point1 - point2) <= 1;
 }
 
+/**
+ * Increase risk of all cells near the specified one
+ */
 function increaseRiskAround(field, coordinates) {
   for (let i = coordinates[0] - 1; i <= coordinates[0] + 1; i += 1) {
     for (let j = coordinates[1] - 1; j <= coordinates[1] + 1; j += 1) {

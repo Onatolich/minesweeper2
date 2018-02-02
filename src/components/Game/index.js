@@ -34,6 +34,7 @@ export default class Game extends React.PureComponent {
       return;
     }
 
+    // Open neighbour cells if current cell has no risk
     for (let i = coordinates[0] - 1; i <= coordinates[0] + 1; i += 1) {
       for (let j = coordinates[1] - 1; j <= coordinates[1] + 1; j += 1) {
         Game.openCell(field, [i, j]);
@@ -41,6 +42,9 @@ export default class Game extends React.PureComponent {
     }
   }
 
+  /**
+   * Generate initial field with no mines
+   */
   static generateField(settings) {
     const field = [];
     for (let i = 0; i < settings.grid[0]; i += 1) {
@@ -80,6 +84,7 @@ export default class Game extends React.PureComponent {
       const field = Game.cloneField(this.state.field);
 
       if (!initialized) {
+        // Generate mines on first click in order to prevent death on first click
         minesGenerator(field, this.props.settings, coordinates);
       }
 
