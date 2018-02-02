@@ -18,3 +18,7 @@ Modal.propTypes = {
   children: PropTypes.node.isRequired,
   show: PropTypes.bool,
 };
+
+Modal.defaultProps = {
+  show: true,
+};
