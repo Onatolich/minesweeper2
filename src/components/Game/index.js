@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Button from '../Button';
+import Modal from '../Modal';
 import Cell from '../Cell';
 import fieldGenerator from './fieldGenerator';
 import './Game.scss';
@@ -134,6 +136,22 @@ export default class Game extends React.PureComponent {
     ));
   }
 
+  renderFinishModal() {
+    const { state } = this.state;
+    const isWin = state === Game.STATES.WIN;
+
+    return (
+      <Modal show={state !== Game.STATES.PROGRESS}>
+        <h1>{isWin ? 'You win! :)' : 'You lost! :('}</h1>
+        <p>
+          <Button onClick={this.props.onFinish}>
+            {isWin ? 'One more time!' : 'Take revenge!'}
+          </Button>
+        </p>
+      </Modal>
+    );
+  }
+
   render() {
     const { settings } = this.props;
     const fieldStyles = {
@@ -146,6 +164,7 @@ export default class Game extends React.PureComponent {
         <div className="Game__Field" style={fieldStyles}>
           {this.renderField()}
         </div>
+        {this.renderFinishModal()}
       </div>
     );
   }
