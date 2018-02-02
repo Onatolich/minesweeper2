@@ -7,8 +7,14 @@
   height: 100%;
   background: #fff;
 
-  .Modal__Background {
-    opacity: 0.9;
+  .Modal {
+    .Modal__Background {
+      opacity: 0.9;
+    }
+
+    .Button {
+      width: 200px;
+    }
   }
 
   .Game__Field {
