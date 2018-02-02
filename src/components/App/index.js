@@ -11,11 +11,11 @@ const settingsMap = {
   },
   medium: {
     grid: [20, 20],
-    mines: 50,
+    mines: 60,
   },
   hard: {
     grid: [20, 40],
-    mines: 100,
+    mines: 130,
   },
 };
 
