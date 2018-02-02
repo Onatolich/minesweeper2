@@ -1,11 +1,156 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Cell from '../Cell';
+import fieldGenerator from './fieldGenerator';
 import './Game.scss';
 
 export default class Game extends React.PureComponent {
+  static STATES = {
+    PROGRESS: 'progress',
+    WIN: 'win',
+    LOOSE: 'loose',
+  };
+
+  static CELL_SIZE = 30;
+
+  static cloneField(field) {
+    return field.map((row) => {
+      return row.map((cell) => ({...cell}));
+    });
+  }
+
+  static openCell(field, coordinates) {
+    let cell;
+    try {
+      cell = field[coordinates[0]][coordinates[1]];
+    } catch (e) { /* Do nothing */ }
+
+    if (!cell || cell.isOpen || cell.isMarked) {
+      return;
+    }
+
+    cell.isOpen = true;
+    if (cell.isMine || !!cell.risk) {
+      return;
+    }
+
+    for (let i = coordinates[0] - 1; i <= coordinates[0] + 1; i += 1) {
+      for (let j = coordinates[1] - 1; j <= coordinates[1] + 1; j += 1) {
+        Game.openCell(field, [i, j]);
+      }
+    }
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      state: Game.STATES.PROGRESS,
+      field: fieldGenerator(this.props.settings),
+    };
+
+    this.processField = this.processField.bind(this);
+  }
+
+  getCellClickHandler(coordinates) {
+    return () => {
+      if (this.state.state !== Game.STATES.PROGRESS) {
+        return;
+      }
+
+      const field = Game.cloneField(this.state.field);
+      Game.openCell(field, coordinates);
+
+      this.setState({ field });
+      setTimeout(this.processField);
+    };
+  }
+
+  getCellRightClickHandler([i, j]) {
+    return (e) => {
+      e.preventDefault();
+      if (this.state.state !== Game.STATES.PROGRESS) {
+        return;
+      }
+
+      const field = Game.cloneField(this.state.field);
+      const cell = field[i][j];
+      if (cell.isOpen) {
+        return;
+      }
+      cell.isMarked = !cell.isMarked;
+
+      this.setState({ field });
+    };
+  }
+
+  finish(isWin) {
+    const state = isWin ? Game.STATES.WIN : Game.STATES.LOOSE;
+    const field = Game.cloneField(this.state.field);
+
+    field.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell.isMine) {
+          cell.isOpen = true;
+        }
+      });
+    });
+
+    this.setState({ field, state });
+  }
+
+  processField() {
+    const { field } = this.state;
+    const { settings } = this.props;
+    let opened = 0;
+
+    const alive = field.every((row) => {
+      return row.every((cell) => {
+        if (cell.isOpen) {
+          opened += 1;
+        }
+        return !cell.isOpen || !cell.isMine;
+      });
+    });
+
+    if (!alive) {
+      this.finish(false);
+      return;
+    }
+
+    if (opened >= (settings.grid[0] * settings.grid[1]) - settings.mines) {
+      this.finish(true);
+    }
+  }
+
+  renderField() {
+    return this.state.field.map((row, i) => (
+      <div className="Game__Row" key={i}>
+        {row.map((data, j) => (
+          <Cell
+            {...data}
+            key={`${i}-${j}`}
+            onClick={this.getCellClickHandler([i, j])}
+            onContextMenu={this.getCellRightClickHandler([i, j])}
+          />
+        ))}
+      </div>
+    ));
+  }
+
   render() {
+    const { settings } = this.props;
+    const fieldStyles = {
+      width: `${settings.grid[1] * Game.CELL_SIZE}px`,
+      height: `${settings.grid[0] * Game.CELL_SIZE}px`,
+    };
+
     return (
-      <div className="Game">Game</div>
+      <div className="Game">
+        <div className="Game__Field" style={fieldStyles}>
+          {this.renderField()}
+        </div>
+      </div>
     );
   }
 }
