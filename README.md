@@ -19,3 +19,5 @@ To build:
 ```sh
 $ npm run build
 ```
+
+Try it online: https://onatolich.github.io/minesweeper2/
