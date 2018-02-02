@@ -7,6 +7,10 @@
   height: 100%;
   background: #fff;
 
+  .Modal__Background {
+    opacity: 0.9;
+  }
+
   .Game__Field {
     display: table;
     position: absolute;
