@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Just on more minesweeper",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.config.js",
-    "lint": "eslint ."
+    "start": "webpack-dev-server --open --config webpack.config.js",
+    "lint": "eslint .",
+    "build": "webpack -p --config webpack.config.js"
   },
   "author": "Onatolich",
   "dependencies": {
